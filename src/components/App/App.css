@@ -1,0 +1,10 @@
+.wrapper {
+  width: 1010px;
+  height: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+  padding-top: 19px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
