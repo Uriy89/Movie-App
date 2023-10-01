@@ -1,3 +1,3 @@
-import MovieBlock from "./MovieBlock";
+import MovieBlock from './MovieBlock';
 
 export default MovieBlock;
