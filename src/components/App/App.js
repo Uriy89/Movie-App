@@ -3,6 +3,7 @@ import MovieBlock from '../MovieBlock';
 import SearchInput from '../SearchInput';
 import './App.css';
 
+//тестовый коммит
 export default class App extends Component {
   render() {
     return (
