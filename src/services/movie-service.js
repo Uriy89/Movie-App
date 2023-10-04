@@ -14,6 +14,7 @@ export default class MovieService {
 
   async getMoviePopular() {
     const res = await this.getResource(`/popular?api_key=`);
+    //console.log(res);
     return res.results.map(this._transformMovie);
   }
 
@@ -24,6 +25,7 @@ export default class MovieService {
 
   _transformMovie(movie) {
     return {
+      id: movie.id,
       title: movie.title,
       release: movie.release_date,
       description: movie.overview
