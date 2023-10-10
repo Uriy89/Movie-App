@@ -9,7 +9,6 @@
   justify-content: space-around;
 }
 
-
 .btn {
   width: 70px;
   color: var(--text-color, rgba(0, 0, 0, 0.65));
@@ -20,8 +19,8 @@
 }
 
 button:focus {
-  color: #1890FF;
-  border-bottom: 3px solid #1890FF;
+  color: #1890ff;
+  border-bottom: 3px solid #1890ff;
 }
 
 .movie-list {
