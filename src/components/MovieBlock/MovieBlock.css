@@ -1,76 +1,96 @@
 .movie-block {
-  width: 454px;
-  height: 281px;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
-  display: flex;
-  margin-bottom: 27px;
-}
+    width: 454px;
+    height: 281px;
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+    display: flex;
+    margin-bottom: 27px;
+    position: relative;
+    
+  }
+  
+  .block-info {
+    padding-left: 20px;
+  }
+  
+  .block-info__content {
+    overflow: hidden;
+    height: 200px;
+    width: 210px;
+  }
+  
+  /*The Crime of Padre Amaro
+  6.6
+  2002-10-01*/
+  
+  .block-info__top {
 
-.block-info {
-  padding-left: 20px;
-  padding-top: 8px;
-}
+  }
 
-.block-info__top {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  height: 35px;
-}
+  .block-info__release {
+  
+  }
+  
+  .block-info__tile {
+    font-family: 'Roboto', sans-serif;
+    color: #000;
+    font-size: 20px;
+    width: 190px;
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+  
+  .block-info__rating {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #e9d100;
+    border-radius: 50%;
+    font-size: 12px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 
-.block-info__tile {
-  font-family: 'Roboto', sans-serif;
-  color: #000;
-  font-size: 20px;
-  line-height: 28px;
-  height: 8px;
-}
-
-.block-info__rating {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  width: 30px;
-  height: 30px;
-  border: 2px solid #e9d100;
-  border-radius: 50%;
-  font-size: 12px;
-}
-
-.block-info__genre {
-  color: rgba(0, 0, 0, 0.65);
-  font-family: 'Roboto', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  border-radius: 2px;
-  border: 1px solid #d9d9d9;
-  background: #fafafa;
-  padding: 3px;
-  margin-right: 5px;
-}
-
-.block-info__release {
-  font-family: 'Roboto', sans-serif;
-  color: #827e7e;
-  line-height: 22px;
-  font-size: 12px;
-  position: relative;
-  bottom: 20;
-  margin: 0;
-  margin-bottom: 10px;
-}
-
-.block-info__description {
-  font-family: 'Roboto', sans-serif;
-  color: #000;
-  width: 228px;
-  height: 129px;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 22px;
-  overflow: hidden;
-  -webkit-line-clamp: 2; /* Число отображаемых строк */
-  display: -webkit-box; /* Включаем флексбоксы */
-  -webkit-box-orient: horizontal; /* Вертикальная ориентация */
-}
+  .block-info__content {
+    overflow: hidden;
+  }
+  
+  .block-info__genre {
+    color: rgba(0, 0, 0, 0.65);
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    border-radius: 2px;
+    border: 1px solid #d9d9d9;
+    background: #fafafa;
+    padding: 3px;
+    margin-right: 5px;
+  }
+  
+  .block-info__release {
+    font-family: 'Roboto', sans-serif;
+    color: #827e7e;
+    line-height: 22px;
+    font-size: 12px;
+    position: relative;
+    bottom: 20;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+  
+  .block-info__description {
+    font-family: 'Roboto', sans-serif;
+    color: #000;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    max-height: 100px;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  

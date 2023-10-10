@@ -78,12 +78,15 @@
   background: #fe718d;
 }
 .loadingio-spinner-spinner-30lxjwh5t2c {
+  position: absolute;
   width: 200px;
   height: 200px;
   display: inline-block;
   overflow: hidden;
-  background: #ffffff;
+  background: transparent;
+  right: 44%;
 }
+
 .ldio-qjoebj3mpf {
   width: 100%;
   height: 100%;

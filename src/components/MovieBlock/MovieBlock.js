@@ -1,59 +1,38 @@
-import React, { Component } from 'react';
-import MovieService from '../../services/movie-service';
-import Spinner from '../Spinner';
-import MovieView from '../MovieView';
-import ErrorIndicator from '../ErrorIndicator';
+import React from 'react';
+import m from './m.png';
 import './MovieBlock.css';
 
-export default class MovieBlock extends Component {
-  movieService = new MovieService();
+const MovieBlock = ({ movie }) => {
+  const { title, release, description, poster, rating } = movie;
+  const ratingFix = rating.toFixed(1);
 
-  state = {
-    movies: [],
-    loading: true,
-    error: false
-  };
+  let filmPoster;
+  if (poster === null) filmPoster = m;
+  else filmPoster = `https://image.tmdb.org/t/p/w500${poster}`;
 
-  constructor() {
-    super();
-    this.allMovie();
-  }
+  const date = new Date(release);
+  const day = date.getDate();
+  const month = date.toLocaleString('en-US', { month: 'long' });
+  const year = date.getFullYear();
+  const dateRes = day + ' ' + month + ', ' + year;
 
-  onError = () => {
-    this.setState({
-      error: true,
-      loading: false
-    });
-  };
+  return (
+    <div className="movie-block">
+      <img src={filmPoster} alt="movie cover" />
+      <div className="block-info">
+        <div className="block-info__top">
+          <h3 className="block-info__tile">{title}</h3>
+          <p className="block-info__release">{dateRes}</p>
+          <div className="block-info__rating">{ratingFix}</div>
+        </div>
+        <div className="block-info__content">
+          <span className="block-info__genre">Action</span>
+          <span className="block-info__genre">Drama</span>
+          <p className="block-info__description">{description}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-  onMoviesLoaded = (movies) => {
-    this.setState({ movies, loading: false });
-  };
-
-  allMovie() {
-    this.movieService.getMoviePopular().then(this.onMoviesLoaded).catch(this.onError);
-  }
-
-  render() {
-    const { loading, error } = this.state;
-
-    const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorIndicator /> : null;
-    const elements = this.state.movies.map((item) => {
-      return (
-        <React.Fragment key={item.id}>
-          <MovieView movie={item} />
-        </React.Fragment>
-      );
-    });
-
-    const hasDate = !(loading || error) ? elements : null;
-    return (
-      <>
-        {hasDate}
-        {spinner}
-        {errorMessage}
-      </>
-    );
-  }
-}
+export default MovieBlock;

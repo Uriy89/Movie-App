@@ -1,23 +1,20 @@
 import React from 'react';
+import { Spin } from 'antd';
 import './Spinner.css';
 
 const Spinner = () => {
   return (
-    <div className="loadingio-spinner-spinner-30lxjwh5t2c">
-      <div className="ldio-qjoebj3mpf">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
+    <div>
+      <Spin
+        size="large"
+        style={{
+          transform: 'scale(200%)',
+          position: 'absolute',
+          left: '50%',
+          top: '150px',
+          zIndex: '10'
+        }}
+      />
     </div>
   );
 };
