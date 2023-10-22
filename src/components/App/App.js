@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import MoviesList from '../MoviesList';
-import SearchInput from '../SearchInput';
-import ErrorOffline from '../ErrorOffline';
+import ErrorOffline from '../Errors/ErrorOffline';
 import { Offline } from 'react-detect-offline';
 import MovieService from '../../services/movie-service';
+import GuestSession from '../../services/guest-session';
 import Spinner from '../Spinner';
-import Search from '../Search';
-import Rated from '../Rated';
+import Header from '../Header';
 import Pagin from '../Pagin';
+import { GuestSessionProvider } from '../Contexts/GuestSessionContext/GuestSessionContext';
 import './App.css';
 
 export default class App extends Component {
   movieService = new MovieService();
+  guestSession = new GuestSession();
 
   state = {
     movies: [],
@@ -19,7 +20,11 @@ export default class App extends Component {
     error: false,
     value: '',
     page: 1,
-    total: 0
+    total: 0,
+    rate: 0,
+    sessionId: '',
+    isRate: false,
+    ratedMovie: []
   };
 
   onError = () => {
@@ -31,6 +36,7 @@ export default class App extends Component {
 
   componentDidMount() {
     this.onMovieSearch();
+    this.onSessionId();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -41,6 +47,14 @@ export default class App extends Component {
 
   onMoviesLoaded = (movies, total) => {
     this.setState({ movies, total, loading: false });
+  };
+
+  onChangeSessionId = (id) => {
+    this.setState({ sessionId: id });
+  };
+
+  onChangeSession = (rated) => {
+    this.setState({ ratedMovie: rated });
   };
 
   onHandlePageChange = (page) => {
@@ -54,9 +68,39 @@ export default class App extends Component {
     this.movieService
       .getSearchMovie(value, page)
       .then(({ results, totalResults }) => {
+        console.log(results);
         this.onMoviesLoaded(results, totalResults);
       })
       .catch(this.onError);
+  };
+
+  onSessionId = () => {
+    this.guestSession
+      .createNewGuestSession()
+      .then((sessionId) => this.onChangeSessionId(sessionId))
+      .catch(this.onError);
+  };
+
+  onRateFilm = (sessionId, movieId, countStars) => {
+    this.guestSession.postRateMovie(sessionId, movieId, countStars).catch(this.onError);
+  };
+
+  onGetRateFilms = (sessionId) => {
+    this.guestSession
+      .getRatedMovies(sessionId)
+      .then(({ results, totalResults }) => {
+        this.onMoviesLoaded(results, totalResults);
+      })
+      .catch(this.onError);
+    this.setState({ isRate: true });
+  };
+
+  onSearch = () => {
+    this.setState({ isRate: false });
+  };
+
+  onChangeStar = (event) => {
+    this.setState({ rate: event });
   };
 
   onSearchInputChange = (value) => {
@@ -64,32 +108,37 @@ export default class App extends Component {
   };
 
   render() {
-    const { movies, loading, error, total, page } = this.state;
+    const { movies, loading, error, total, page, sessionId, rate, isRate } = this.state;
     const spinner = loading ? <Spinner /> : null;
-    console.log(loading);
     const isPagin =
       movies.length > 0 ? (
         <Pagin total={total} onHandlePageChange={this.onHandlePageChange} current={page} />
       ) : null;
-
+    console.log(sessionId);
     return (
       <div className="wrapper">
-        <div className="buttons">
-          <Search />
-          <Rated />
-        </div>
-        <SearchInput
-          onMovieSearch={this.onMovieSearch}
-          onSearchInputChange={this.onSearchInputChange}
-        />
-        <Offline>
-          <ErrorOffline />
-        </Offline>
-        <div className="movie-list">
-          {spinner}
-          <MoviesList className="movie-list" movies={movies} error={error} />
-        </div>
-        {isPagin}
+        <GuestSessionProvider value={this.onRateFilm}>
+          <Header
+            onMovieSearch={this.onMovieSearch}
+            onSearchInputChange={this.onSearchInputChange}
+          />
+          <Offline>
+            <ErrorOffline />
+          </Offline>
+          <div className="movie-list">
+            {spinner}
+            <MoviesList
+              className="movie-list"
+              movies={movies}
+              error={error}
+              onChangeStar={this.onChangeStar}
+              sessionId={sessionId}
+              rate={rate}
+              isRate={isRate}
+            />
+          </div>
+          {isPagin}
+        </GuestSessionProvider>
       </div>
     );
   }
