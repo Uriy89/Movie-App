@@ -29,10 +29,17 @@ export default class GuestSession {
     await response.json();
   }
 
-  async getRatedMovies(sessionId) {
-    const res = await this.getResource(`/3/guest_session/${sessionId}/rated/movies?`);
-    console.log(res);
-    return res;
+  async getRatedMovies(sessionId, currPage = 1) {
+    try {
+      const res = await this.getResource(
+        `/3/guest_session/${sessionId}/rated/movies?page=${currPage}&`
+      );
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.error('Error in getRatedMovies:', error);
+      throw new Error('An error occurred while fetching rated movies.');
+    }
   }
 
   async postRateMovie(sessionId, movieId, countStars) {
@@ -48,9 +55,7 @@ export default class GuestSession {
         }
       });
       if (!result.ok) throw new Error(`Failed to Fetch: ${url} Description: ${result.statusText}`);
-      if (result.ok) throw new Error(`Ok sdgfsd!#@#`);
       const x = await result;
-      console.log(x);
       return x;
     } catch (e) {
       throw new Error('Ошибка отправки оценки');

@@ -42,20 +42,23 @@
   right: 10px;
 }
 
-.block-info__content {
-  overflow: hidden;
+.block-info__rating-a {
+  border: 2px solid #66E900;
 }
 
-.block-info__genre {
-  color: rgba(0, 0, 0, 0.65);
-  font-family: 'Roboto', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  border-radius: 2px;
-  border: 1px solid #d9d9d9;
-  background: #fafafa;
-  padding: 3px;
-  margin-right: 5px;
+.block-info__rating-b {
+  border: 2px solid #E9D100;
+}
+.block-info__rating-c {
+  border: 2px solid #E97E00;
+}
+
+.block-info__rating-d {
+  border: 2px solid #E90000;
+}
+
+.block-info__content {
+  overflow: hidden;
 }
 
 .block-info__release {
@@ -65,6 +68,11 @@
   font-size: 12px;
   position: relative;
   margin: 0;
+}
+
+.block-info__genres {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .block-info__description {

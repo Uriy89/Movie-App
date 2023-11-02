@@ -4,11 +4,16 @@ import SearchInput from './SearchInput';
 import './Header.css';
 
 const Header = (props) => {
-  const { onMovieSearch, onSearchInputChange } = props;
+  const { sessionId, onMovieSearch, onGetRateFilms, onIsRateFalse, onIsRateTrue, value } = props;
   return (
     <>
-      <Buttons />
-      <SearchInput onMovieSearch={onMovieSearch} onSearchInputChange={onSearchInputChange} />
+      <Buttons
+        sessionId={sessionId}
+        onGetRateFilms={onGetRateFilms}
+        onIsRateFalse={onIsRateFalse}
+        onIsRateTrue={onIsRateTrue}
+      />
+      <SearchInput onMovieSearch={onMovieSearch} value={value} />
     </>
   );
 };

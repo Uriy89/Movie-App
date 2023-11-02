@@ -6,7 +6,7 @@ import MovieService from '../../services/movie-service';
 import GuestSession from '../../services/guest-session';
 import Spinner from '../Spinner';
 import Header from '../Header';
-import Pagin from '../Pagin';
+import { Pagination } from 'antd';
 import { GuestSessionProvider } from '../Contexts/GuestSessionContext/GuestSessionContext';
 import './App.css';
 
@@ -20,11 +20,13 @@ export default class App extends Component {
     error: false,
     value: '',
     page: 1,
+    pageRate: 1,
     total: 0,
+    totalRate: 0,
     rate: 0,
     sessionId: '',
     isRate: false,
-    ratedMovie: []
+    ratedMovies: []
   };
 
   onError = () => {
@@ -36,17 +38,20 @@ export default class App extends Component {
 
   componentDidMount() {
     this.onMovieSearch();
+    this.onGetGenresMovies();
     this.onSessionId();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.page !== this.state.page) {
-      this.onMovieSearch();
-    }
   }
 
   onMoviesLoaded = (movies, total) => {
     this.setState({ movies, total, loading: false });
+  };
+
+  onRatedLoaded = (ratedMovies, totalRate) => {
+    this.setState({ ratedMovies, totalRate, loading: false });
+  };
+
+  onGenreMovie = (genresObj) => {
+    this.setState({ genresObj });
   };
 
   onChangeSessionId = (id) => {
@@ -57,21 +62,36 @@ export default class App extends Component {
     this.setState({ ratedMovie: rated });
   };
 
-  onHandlePageChange = (page) => {
-    this.setState({ page, loading: true }, () => {
-      this.onMovieSearch();
-    });
+  onIsRateTrue = () => {
+    this.setState({ isRate: true });
   };
 
-  onMovieSearch = () => {
-    const { value, page } = this.state;
+  onIsRateFalse = () => {
+    this.setState({ isRate: false });
+  };
+
+  onHandlePageChange = (page) => {
+    if (!this.state.isRate) {
+      this.setState({ page, loading: true }, () => {
+        this.onMovieSearch(this.state.value);
+      });
+    } else {
+      this.setState({ pageRate: page, loading: true }, () => {
+        this.onGetRateFilms(this.state.sessionId, page);
+      });
+    }
+  };
+
+  onMovieSearch = (value) => {
+    const { page } = this.state;
     this.movieService
       .getSearchMovie(value, page)
-      .then(({ results, totalResults }) => {
-        console.log(results);
-        this.onMoviesLoaded(results, totalResults);
+      .then(({ results, total_results }) => {
+        this.onMoviesLoaded(results, total_results);
+        this.setState({ value: value });
       })
       .catch(this.onError);
+    this.onIsRateFalse();
   };
 
   onSessionId = () => {
@@ -82,45 +102,71 @@ export default class App extends Component {
   };
 
   onRateFilm = (sessionId, movieId, countStars) => {
-    this.guestSession.postRateMovie(sessionId, movieId, countStars).catch(this.onError);
+    this.guestSession.postRateMovie(sessionId, movieId, countStars).catch((e) => console.log(e));
   };
 
-  onGetRateFilms = (sessionId) => {
+  onGetRateFilms = (sessionId, currPage) => {
     this.guestSession
-      .getRatedMovies(sessionId)
-      .then(({ results, totalResults }) => {
-        this.onMoviesLoaded(results, totalResults);
+      .getRatedMovies(sessionId, currPage)
+      .then(({ results, total_results }) => {
+        this.onRatedLoaded(results, total_results);
+        this.setState({ pageRate: currPage });
       })
       .catch(this.onError);
-    this.setState({ isRate: true });
+    this.onIsRateTrue();
   };
 
-  onSearch = () => {
-    this.setState({ isRate: false });
+  onGetGenresMovies = () => {
+    this.movieService
+      .getGenresMovie()
+      .then((result) => {
+        this.onGenreMovie(result);
+      })
+      .catch(this.onError);
   };
 
   onChangeStar = (event) => {
     this.setState({ rate: event });
   };
 
-  onSearchInputChange = (value) => {
-    this.setState({ value, loading: true });
-  };
-
   render() {
-    const { movies, loading, error, total, page, sessionId, rate, isRate } = this.state;
+    const {
+      movies,
+      loading,
+      error,
+      total,
+      totalRate,
+      page,
+      pageRate,
+      sessionId,
+      value,
+      rate,
+      isRate,
+      ratedMovies,
+      genresObj
+    } = this.state;
     const spinner = loading ? <Spinner /> : null;
     const isPagin =
-      movies.length > 0 ? (
-        <Pagin total={total} onHandlePageChange={this.onHandlePageChange} current={page} />
+      (isRate ? ratedMovies : movies).length > 0 ? (
+        <Pagination
+          total={isRate ? totalRate : total}
+          current={isRate ? pageRate : page}
+          onChange={this.onHandlePageChange}
+          pageSize={20}
+          showSizeChanger={false}
+          responsive={false}
+        />
       ) : null;
-    console.log(sessionId);
     return (
       <div className="wrapper">
         <GuestSessionProvider value={this.onRateFilm}>
           <Header
+            sessionId={sessionId}
+            value={value}
             onMovieSearch={this.onMovieSearch}
-            onSearchInputChange={this.onSearchInputChange}
+            onGetRateFilms={this.onGetRateFilms}
+            onIsRateFalse={this.onIsRateFalse}
+            onIsRateTrue={this.onIsRateTrue}
           />
           <Offline>
             <ErrorOffline />
@@ -135,9 +181,11 @@ export default class App extends Component {
               sessionId={sessionId}
               rate={rate}
               isRate={isRate}
+              ratedMovies={ratedMovies}
+              genresObj={genresObj}
             />
           </div>
-          {isPagin}
+          <div className="pagination-wrap">{isPagin}</div>
         </GuestSessionProvider>
       </div>
     );

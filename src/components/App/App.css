@@ -15,3 +15,9 @@
   flex-wrap: wrap;
   justify-content: space-around;
 }
+
+.pagination-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

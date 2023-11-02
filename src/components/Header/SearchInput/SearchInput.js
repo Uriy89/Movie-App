@@ -4,20 +4,25 @@ import { debounce } from 'lodash';
 import './SearchInput.css';
 
 export default class SearchInput extends Component {
-  onSearch = debounce(
-    (event) => {
-      event.preventDefault();
-      this.props.onSearchInputChange(event.target.value);
-      this.props.onMovieSearch();
-      console.log(event.target.value);
-    },
-    800,
-    { leading: true }
-  );
+  state = {
+    inputValue: ''
+  };
+
+  handleSearch = () => {
+    this.props.onMovieSearch(this.state.inputValue);
+  };
+
+  debouncedSearch = debounce(this.handleSearch, 500);
+
+  handleChange = (e) => {
+    const value = e.target.value;
+    this.setState({ inputValue: value });
+    this.debouncedSearch();
+  };
 
   render() {
     return (
-      <input className="form__input" placeholder="Type to search..." onChange={this.onSearch} />
+      <input className="form__input" placeholder="Type to search..." onChange={this.handleChange} />
     );
   }
 }

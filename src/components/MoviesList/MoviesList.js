@@ -5,14 +5,20 @@ import PropTypes from 'prop-types';
 import './MoviesList.css';
 
 const MoviesList = (props) => {
-  const { movies, error, sessionId, rate, isRate } = props;
+  const { movies, error, sessionId, isRate, ratedMovies, genresObj } = props;
 
   const errorMessage = error ? <ErrorIndicator /> : null;
-
-  const elements = movies.map((item) => {
+  const elements = (isRate ? ratedMovies : movies).map((item) => {
     return (
       <React.Fragment key={item.id}>
-        <MovieItem movie={item} sessionId={sessionId} rate={rate} isRate={isRate} />
+        <MovieItem
+          movie={item}
+          sessionId={sessionId}
+          rate={isRate ? item.rating : item.vote_average}
+          isRate={isRate}
+          genreIds={item.genre_ids}
+          genresObj={genresObj}
+        />
       </React.Fragment>
     );
   });
@@ -29,7 +35,8 @@ MoviesList.propTypes = {
   movies: PropTypes.array,
   sessionId: PropTypes.string,
   onRateFilm: PropTypes.func,
-  error: PropTypes.bool
+  error: PropTypes.bool,
+  ratedMovies: PropTypes.array
 };
 
 export default MoviesList;
